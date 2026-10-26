@@ -7,6 +7,10 @@ venv/
 build/
 dist/
 
+# llmbench: your working config, copied from config/bench.sample.yaml.
+# The sample is tracked; your edited copy is not, so sweeps never clobber it.
+config/bench.yaml
+
 # llmbench: full generation text dumps (opt-in via --save-output) can get large
 results/raw/
 

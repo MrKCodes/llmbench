@@ -1,6 +1,13 @@
-# llmbench sweep definition.
+# llmbench sweep definition — SAMPLE / template.
 #
-# Run per machine:  llmbench run --config config/bench.yaml
+# This file (config/bench.sample.yaml) is tracked in git. Copy it to your own
+# working config, which is git-ignored, so your edits and sweeps never
+# overwrite this template:
+#
+#   cp config/bench.sample.yaml config/bench.yaml
+#
+# Then run per machine (defaults to config/bench.yaml):
+#   llmbench run
 # A friendly label is optional: --machine "Studio Mac". The results folder is
 # named from detected hardware either way, so re-runs on a box group together.
 

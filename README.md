@@ -46,7 +46,12 @@ Requires Python 3.9+. Only two dependencies: `requests` and `pyyaml`.
      Server** on port `1234`. The same GGUF file works on every machine.
    - **Ollama (optional):** install, `ollama pull qwen2.5-coder:7b`, server on
      `http://localhost:11434`. Enable it in the config to also sweep it.
-2. Edit [`config/bench.yaml`](config/bench.yaml) — set the models you loaded.
+2. Copy the sample config, then edit your copy (the sample stays pristine, and
+   your working copy is git-ignored so sweeps never overwrite it):
+   ```bash
+   cp config/bench.sample.yaml config/bench.yaml
+   ```
+   Set the models you actually loaded in `config/bench.yaml`.
 3. Run the sweep on each machine — no machine name needed:
    ```bash
    llmbench run
@@ -101,7 +106,8 @@ Two comparisons, don't mix them:
 - **Same format across machines** (gguf vs gguf) → honest hardware A/B.
 - **Same machine across formats** (gguf vs mlx) → that Mac's format ceiling.
 
-The shipped [`config/bench.yaml`](config/bench.yaml) is a ready-made size ladder
+The shipped [`config/bench.sample.yaml`](config/bench.sample.yaml) is a
+ready-made size ladder
 (4B → 32B, plus a 30B MoE) with GGUF+MLX variants. Confirm each id against what
 you actually downloaded — a mistyped id just produces an error row, it won't
 crash the sweep.
@@ -123,7 +129,7 @@ report and dashboard can be regenerated later.
 ## Layout
 
 ```
-config/bench.yaml      the sweep definition
+config/bench.sample.yaml  tracked template; copy to config/bench.yaml and edit
 llmbench/
   cli.py               `run`, `report`, `dashboard` commands
   config.py            load + validate YAML

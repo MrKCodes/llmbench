@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
@@ -82,6 +83,14 @@ def _parse_variants(backend: str, value) -> List[Tuple[str, str]]:
 
 
 def load(path: str) -> Config:
+    if not os.path.exists(path):
+        # The tracked file is config/bench.sample.yaml; users copy it to their
+        # own working config so sweeps never overwrite the default.
+        sample = os.path.join(os.path.dirname(path) or ".", "bench.sample.yaml")
+        hint = (f"\nCopy the sample to start: cp {sample} {path}"
+                if os.path.exists(sample) else "")
+        raise FileNotFoundError(f"config not found: {path}{hint}")
+
     with open(path, encoding="utf-8") as fh:
         raw = yaml.safe_load(fh)
 
