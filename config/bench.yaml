@@ -1,0 +1,54 @@
+# llmbench sweep definition.
+#
+# Run per machine:  llmbench run --config config/bench.yaml --machine <name>
+# The --machine value just labels the output; pick anything stable per box.
+
+# How many times to run each (backend, model, prompt) combination.
+runs: 5
+# Extra unmeasured runs first, to load the model into memory / warm caches.
+warmup: 1
+# Hard ceiling on tokens generated per run. Keeps long models bounded and makes
+# tokens/sec comparable across machines (same work each time). null = no limit.
+max_tokens: 512
+# Sampling temperature. Low = near-deterministic, so runs are repeatable.
+temperature: 0.2
+# Per-request timeout in seconds. Large models on slow hardware need headroom.
+timeout: 600
+
+# Backends to exercise. Disable the ones you are not running on this machine.
+# LM Studio is enabled by default: its GGUF model files copy cleanly between
+# machines, so it's the easy path for a multi-machine sweep. Enable Ollama too
+# if you have it running on a given box.
+backends:
+  - name: lmstudio
+    enabled: true
+    base_url: http://localhost:1234
+  - name: ollama
+    enabled: false
+    base_url: http://localhost:11434
+
+# Models to sweep. `ollama` / `lmstudio` are the identifier each backend knows
+# the model by — they differ, so set both. Leave one out to skip that model on
+# that backend. `label` is what shows up in the report.
+models:
+  - label: qwen2.5-coder-7b
+    size: "7B"
+    ollama: qwen2.5-coder:7b
+    lmstudio: qwen2.5-coder-7b-instruct
+  - label: qwen2.5-coder-14b
+    size: "14B"
+    ollama: qwen2.5-coder:14b
+    lmstudio: qwen2.5-coder-14b-instruct
+
+# Prompts sent to every model on every backend. Keep them representative of the
+# work you actually care about. Each gets `runs` measured iterations.
+prompts:
+  - id: fib-memo
+    text: >-
+      Write a complete, highly optimized Python script to calculate the
+      Fibonacci sequence up to N numbers using memoization. Include docstrings
+      and type hinting.
+  - id: explain-uma
+    text: >-
+      Explain unified memory architecture versus discrete VRAM for local LLM
+      inference in about 200 words, for a technical reader.

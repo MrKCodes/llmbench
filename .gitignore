@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# llmbench: full generation text dumps (opt-in via --save-output) can get large
+results/raw/
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
