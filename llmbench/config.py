@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import yaml
 
@@ -19,8 +19,11 @@ class BackendCfg:
 class ModelCfg:
     label: str
     size: Optional[str] = None
-    # backend name -> model identifier that backend uses
-    ids: Dict[str, str] = field(default_factory=dict)
+    # backend name -> list of (format, model_identifier) variants.
+    # One model can be benchmarked in several on-disk formats on the same
+    # backend — e.g. the same 14B model as GGUF and as MLX in LM Studio on a
+    # Mac. Each (format, id) becomes its own cell so the two never pool together.
+    variants: Dict[str, List[Tuple[str, str]]] = field(default_factory=dict)
 
 
 @dataclass
@@ -45,6 +48,37 @@ class Config:
 
 
 _KNOWN_BACKENDS = {"ollama", "lmstudio"}
+
+# Format each backend serves unless a variant says otherwise. Ollama is always
+# GGUF; LM Studio can serve both, so a bare string there is assumed GGUF and MLX
+# must be stated explicitly.
+_DEFAULT_FORMAT = {"ollama": "gguf", "lmstudio": "gguf"}
+
+
+def _parse_variants(backend: str, value) -> List[Tuple[str, str]]:
+    """Normalize a model's per-backend value into [(format, id), ...].
+
+    Accepts either a bare string (format inferred from the backend default) or
+    a list of {format, id} mappings for benchmarking the same model in several
+    formats on one backend (e.g. GGUF and MLX in LM Studio).
+    """
+    if isinstance(value, str):
+        return [(_DEFAULT_FORMAT.get(backend, "gguf"), value)]
+    if isinstance(value, list):
+        out = []
+        for item in value:
+            if not isinstance(item, dict) or "id" not in item:
+                raise ValueError(
+                    f"backend {backend!r} variant must be a mapping with an "
+                    f"'id' (and optional 'format'); got {item!r}"
+                )
+            fmt = str(item.get("format", _DEFAULT_FORMAT.get(backend, "gguf"))).lower()
+            out.append((fmt, item["id"]))
+        return out
+    raise ValueError(
+        f"backend {backend!r} value must be a string or a list of "
+        f"{{format, id}} mappings; got {type(value).__name__}"
+    )
 
 
 def load(path: str) -> Config:
@@ -71,13 +105,17 @@ def load(path: str) -> Config:
 
     models = []
     for m in raw.get("models", []):
-        ids = {k: m[k] for k in _KNOWN_BACKENDS if k in m}
-        if not ids:
+        variants = {
+            k: _parse_variants(k, m[k]) for k in _KNOWN_BACKENDS if k in m
+        }
+        if not variants:
             raise ValueError(
                 f"model {m.get('label')!r} has no backend identifiers "
                 f"(expected at least one of {sorted(_KNOWN_BACKENDS)})"
             )
-        models.append(ModelCfg(label=m["label"], size=m.get("size"), ids=ids))
+        models.append(
+            ModelCfg(label=m["label"], size=m.get("size"), variants=variants)
+        )
 
     prompts = [PromptCfg(id=p["id"], text=p["text"].strip()) for p in raw.get("prompts", [])]
 

@@ -72,6 +72,40 @@ Requires Python 3.9+. Only two dependencies: `requests` and `pyyaml`.
   sessions for the comparison numbers (more runs = bigger sample), and the
   deep dive shows each session separately so you can see run-to-run consistency.
 
+## Model formats (GGUF vs MLX)
+
+A cell is a `(backend, model, format, prompt)` combination. `format` is part of
+the identity, so the same model benchmarked in two formats stays **two separate
+cells that never pool together** — the report and dashboard show a `Format`
+column and never average a GGUF run into an MLX one.
+
+Give a model one id per backend (format defaults to `gguf`), or a list of
+format variants to sweep several:
+
+```yaml
+models:
+  - label: qwen2.5-coder-7b
+    size: "7B"
+    ollama: qwen2.5-coder:7b            # bare string -> format: gguf
+    lmstudio:
+      - { format: gguf, id: qwen2.5-coder-7b-instruct }
+      - { format: mlx,  id: mlx-community/Qwen2.5-Coder-7B-Instruct-4bit }
+```
+
+On an Apple Silicon Mac, LM Studio serves both GGUF and **MLX** (Apple's
+framework, typically 20–40% faster on Macs) on the same port — so you can
+measure the Mac's true ceiling while still comparing GGUF against other
+machines. MLX is Mac-only; other boxes simply skip the `mlx` variant.
+
+Two comparisons, don't mix them:
+- **Same format across machines** (gguf vs gguf) → honest hardware A/B.
+- **Same machine across formats** (gguf vs mlx) → that Mac's format ceiling.
+
+The shipped [`config/bench.yaml`](config/bench.yaml) is a ready-made size ladder
+(4B → 32B, plus a 30B MoE) with GGUF+MLX variants. Confirm each id against what
+you actually downloaded — a mistyped id just produces an error row, it won't
+crash the sweep.
+
 ## Remote machines
 
 To benchmark a machine you only reach over the network (e.g. an old laptop used

@@ -28,8 +28,8 @@ from .loader import (
 )
 
 
-def _cell_id(backend: str, model: str, prompt_id: str) -> str:
-    return f"{backend} / {model} / {prompt_id}"
+def _cell_id(backend: str, model: str, fmt: str, prompt_id: str) -> str:
+    return f"{backend} / {model} / {fmt} / {prompt_id}"
 
 
 def _median(summary: Optional[Dict], metric: str) -> Optional[float]:
@@ -60,7 +60,8 @@ def _build_payload(machines: List[Machine]) -> Dict:
         "id": _cell_id(*k),
         "backend": k[0],
         "model": k[1],
-        "prompt_id": k[2],
+        "format": k[2],
+        "prompt_id": k[3],
         "size": models.get(k[1]),
     } for k in keys]
 
@@ -369,7 +370,7 @@ function drawLines(canvas, labels, lines, yLabel) {
 const cmpMetric = document.getElementById('cmp-metric');
 DATA.metrics.forEach(m => cmpMetric.append(el('option',{value:m.key},document.createTextNode(m.label))));
 
-function cellShort(c){ return `${c.model} · ${c.prompt_id} (${c.backend})`; }
+function cellShort(c){ return `${c.model} · ${c.format} · ${c.prompt_id} (${c.backend})`; }
 
 function renderComparison() {
   const metricKey = cmpMetric.value;
@@ -390,7 +391,7 @@ function renderComparison() {
   // table with best-per-row highlight
   const tbl = el('table');
   const head = el('tr',{},[el('th',{},document.createTextNode('Backend')),
-    el('th',{},document.createTextNode('Model')), el('th',{},document.createTextNode('Size')),
+    el('th',{},document.createTextNode('Model')), el('th',{},document.createTextNode('Format')), el('th',{},document.createTextNode('Size')),
     el('th',{},document.createTextNode('Prompt'))]);
   series.forEach(s=>head.append(el('th',{class:'num'},document.createTextNode(s.label))));
   tbl.append(el('thead',{},head));
@@ -400,7 +401,7 @@ function renderComparison() {
     const present = vals.filter(v=>typeof v==='number');
     const best = present.length>1 ? (metric.higher_is_better?Math.max(...present):Math.min(...present)) : null;
     const tr = el('tr',{},[el('td',{},document.createTextNode(g.backend)),
-      el('td',{},document.createTextNode(g.model)), el('td',{},document.createTextNode(g.size||'—')),
+      el('td',{},document.createTextNode(g.model)), el('td',{},document.createTextNode(g.format)), el('td',{},document.createTextNode(g.size||'—')),
       el('td',{},document.createTextNode(g.prompt_id))]);
     vals.forEach(v=>{
       const td = el('td',{class:'num'},document.createTextNode(fmt(v,metric.digits)));

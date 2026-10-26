@@ -55,17 +55,19 @@ def _comparison_table(
     higher_is_better: bool, digits: int,
 ) -> List[str]:
     names = [m.label for m in machines]
-    header = "| Backend | Model | Size | Prompt | " + " | ".join(names) + " |"
-    sep = "|" + "---|" * (4 + len(names))
+    header = ("| Backend | Model | Format | Size | Prompt | "
+              + " | ".join(names) + " |")
+    sep = "|" + "---|" * (5 + len(names))
     lines = [f"### {label} — median across re-runs", "", header, sep]
 
-    for backend, model, prompt_id in keys:
+    for key in keys:
+        backend, model, fmt, prompt_id = key
         values: List[Optional[float]] = []
         size = None
         for m in machines:
-            summ = m.pooled_summary((backend, model, prompt_id))
+            summ = m.pooled_summary(key)
             values.append(_median(summ, metric))
-            size = size or m.size_for((backend, model, prompt_id))
+            size = size or m.size_for(key)
 
         present = [v for v in values if v is not None]
         best = (max(present) if higher_is_better else min(present)) if present else None
@@ -80,8 +82,8 @@ def _comparison_table(
                 text = f"**{text}**"
             rendered.append(text)
 
-        lines.append(f"| {backend} | {model} | {size or '—'} | {prompt_id} | "
-                     + " | ".join(rendered) + " |")
+        lines.append(f"| {backend} | {model} | {fmt} | {size or '—'} | "
+                     f"{prompt_id} | " + " | ".join(rendered) + " |")
     lines.append("")
     return lines
 
@@ -101,17 +103,17 @@ def _deep_dive(machines: List[Machine], keys) -> List[str]:
         if not mkeys:
             lines += ["_No measured cells._", ""]
             continue
-        lines.append("| Backend | Model | Prompt | Re-runs | Pooled gen tok/s "
-                     "(median) | spread (±) | TTFT median (s) |")
-        lines.append("|---|---|---|---|---|---|---|")
-        for backend, model, prompt_id in mkeys:
-            key = (backend, model, prompt_id)
+        lines.append("| Backend | Model | Format | Prompt | Re-runs | Pooled "
+                     "gen tok/s (median) | spread (±) | TTFT median (s) |")
+        lines.append("|---|---|---|---|---|---|---|---|")
+        for key in mkeys:
+            backend, model, fmt, prompt_id = key
             runs = m.pooled_runs(key)
             summ = m.pooled_summary(key)
             gen = summ.get("gen_tokens_per_s") if summ else None
             ttft = summ.get("ttft_s") if summ else None
             lines.append(
-                f"| {backend} | {model} | {prompt_id} | {len(runs)} | "
+                f"| {backend} | {model} | {fmt} | {prompt_id} | {len(runs)} | "
                 f"{_fmt(gen.get('median') if gen else None,1)} | "
                 f"{_fmt(gen.get('stdev') if gen else None,1)} | "
                 f"{_fmt(ttft.get('median') if ttft else None,3)} |"
@@ -127,15 +129,17 @@ def _deep_dive(machines: List[Machine], keys) -> List[str]:
 def _session_trend(m: Machine, mkeys) -> List[str]:
     lines = [f"<details><summary>{m.label}: generation speed per session "
              f"(median tok/s)</summary>", ""]
-    for backend, model, prompt_id in mkeys:
-        sessions = m.session_summaries((backend, model, prompt_id))
+    for key in mkeys:
+        backend, model, fmt, prompt_id = key
+        sessions = m.session_summaries(key)
         if len(sessions) <= 1:
             continue
         points = []
         for i, s in enumerate(sessions, 1):
             val = _median(s.get("summary"), "gen_tokens_per_s")
             points.append(f"s{i}={_fmt(val,1)}")
-        lines.append(f"- `{backend}/{model}/{prompt_id}`: " + " → ".join(points))
+        lines.append(f"- `{backend}/{model}/{fmt}/{prompt_id}`: "
+                     + " → ".join(points))
     lines += ["", "</details>", ""]
     return lines
 
@@ -145,12 +149,12 @@ def _errors_section(machines: List[Machine]) -> List[str]:
     for m in machines:
         for e in m.errors():
             rows.append(f"| {m.label} | {e['backend']} | {e['model']} | "
-                        f"{e['prompt_id']} | {e['error']} |")
+                        f"{e['format']} | {e['prompt_id']} | {e['error']} |")
     if not rows:
         return []
     return (["## Errors", "",
-             "| Machine | Backend | Model | Prompt | Error |",
-             "|---|---|---|---|---|"] + rows + [""])
+             "| Machine | Backend | Model | Format | Prompt | Error |",
+             "|---|---|---|---|---|---|"] + rows + [""])
 
 
 def build_report(results_dir: str, generated_at: Optional[str] = None) -> str:

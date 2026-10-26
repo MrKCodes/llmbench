@@ -8,10 +8,12 @@ from, so they never disagree.
 Key ideas:
 - Machines are identified by their hardware `slug`, not a hand-typed name, so
   every session from the same box groups together automatically.
-- A cell is a (backend, model, prompt_id) combination. For cross-machine
-  comparison we *pool* the raw per-run measurements across all of a machine's
-  sessions and re-summarize — more re-runs means a larger sample, not a
-  flattened average-of-averages.
+- A cell is a (backend, model, format, prompt_id) combination. `format` (gguf,
+  mlx, ...) is part of the identity so the same model benchmarked as GGUF and as
+  MLX on one machine stays two separate cells and never pools together. For
+  cross-machine comparison we *pool* the raw per-run measurements across all of
+  a machine's sessions and re-summarize — more re-runs means a larger sample,
+  not a flattened average-of-averages.
 - Per-session summaries are kept too, so the deep dive can show how a machine's
   numbers move across re-runs (consistency / drift).
 """
@@ -25,7 +27,7 @@ from typing import Dict, List, Optional, Tuple
 
 from .stats import summarize
 
-CellKey = Tuple[str, str, str]  # (backend, model, prompt_id)
+CellKey = Tuple[str, str, str, str]  # (backend, model, format, prompt_id)
 
 # Metrics we track everywhere, with display direction.
 METRICS = [
@@ -73,7 +75,10 @@ def _machine_slug(session: Dict) -> str:
 
 
 def _cell_key(cell: Dict) -> CellKey:
-    return (cell["backend"], cell["model"], cell["prompt_id"])
+    # `format` added in schema v2; default to gguf so older result files still
+    # load and group sensibly.
+    return (cell["backend"], cell["model"],
+            cell.get("format", "gguf"), cell["prompt_id"])
 
 
 def _pool_summaries(runs: List[Dict]) -> Optional[Dict]:
@@ -155,8 +160,8 @@ class Machine:
                 if c.get("error"):
                     out.append({
                         "path": s["_path"], "backend": c["backend"],
-                        "model": c["model"], "prompt_id": c["prompt_id"],
-                        "error": c["error"],
+                        "model": c["model"], "format": c.get("format", "gguf"),
+                        "prompt_id": c["prompt_id"], "error": c["error"],
                     })
         return out
 
@@ -182,6 +187,16 @@ def all_models(machines: List[Machine]) -> Dict[str, Optional[str]]:
     """model label -> size, across all machines."""
     out: Dict[str, Optional[str]] = {}
     for m in machines:
-        for (_backend, model, _pid) in m.cell_keys():
-            out.setdefault(model, m.size_for((_backend, model, _pid)))
+        for key in m.cell_keys():
+            model = key[1]
+            out.setdefault(model, m.size_for(key))
     return out
+
+
+def all_formats(machines: List[Machine]) -> List[str]:
+    """Every format seen across all machines, sorted (e.g. ['gguf', 'mlx'])."""
+    fmts = set()
+    for m in machines:
+        for key in m.cell_keys():
+            fmts.add(key[2])
+    return sorted(fmts)

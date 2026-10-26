@@ -54,50 +54,53 @@ def run_sweep(
             continue
 
         for model in config.models:
-            model_id = model.ids.get(backend_cfg.name)
-            if not model_id:
-                continue  # this model not defined for this backend
+            # Each (format, id) variant is benchmarked separately so that, e.g.,
+            # the GGUF and MLX builds of a model on a Mac never pool together.
+            for fmt, model_id in model.variants.get(backend_cfg.name, []):
+                for prompt in config.prompts:
+                    label = (f"{backend_cfg.name} / {model.label} / {fmt} / "
+                             f"{prompt.id}")
+                    log(f"  {label}: warmup x{config.warmup}, "
+                        f"measure x{config.runs}")
 
-            for prompt in config.prompts:
-                label = f"{backend_cfg.name} / {model.label} / {prompt.id}"
-                log(f"  {label}: warmup x{config.warmup}, measure x{config.runs}")
+                    error: Optional[str] = None
+                    measured: List[Dict] = []
+                    try:
+                        for _ in range(config.warmup):
+                            backend.generate(
+                                model_id, prompt.text,
+                                config.temperature, config.max_tokens,
+                            )
+                        for i in range(config.runs):
+                            m = backend.generate(
+                                model_id, prompt.text,
+                                config.temperature, config.max_tokens,
+                            )
+                            d = m.to_dict()
+                            if not (save_output and i == 0):
+                                d.pop("output_text", None)
+                            measured.append(d)
+                            tps = m.gen_tokens_per_s
+                            log(f"    run {i+1}/{config.runs}: "
+                                f"{m.completion_tokens} tok, "
+                                f"{tps:.1f} tok/s" if tps else
+                                f"    run {i+1}/{config.runs}: "
+                                f"{m.completion_tokens} tok")
+                    except Exception as exc:  # noqa: BLE001 - record, continue
+                        error = f"{type(exc).__name__}: {exc}"
+                        log(f"    ERROR: {error}")
 
-                error: Optional[str] = None
-                measured: List[Dict] = []
-                try:
-                    for _ in range(config.warmup):
-                        backend.generate(
-                            model_id, prompt.text,
-                            config.temperature, config.max_tokens,
-                        )
-                    for i in range(config.runs):
-                        m = backend.generate(
-                            model_id, prompt.text,
-                            config.temperature, config.max_tokens,
-                        )
-                        d = m.to_dict()
-                        if not (save_output and i == 0):
-                            d.pop("output_text", None)
-                        measured.append(d)
-                        tps = m.gen_tokens_per_s
-                        log(f"    run {i+1}/{config.runs}: "
-                            f"{m.completion_tokens} tok, "
-                            f"{tps:.1f} tok/s" if tps else
-                            f"    run {i+1}/{config.runs}: {m.completion_tokens} tok")
-                except Exception as exc:  # noqa: BLE001 - record, don't crash sweep
-                    error = f"{type(exc).__name__}: {exc}"
-                    log(f"    ERROR: {error}")
-
-                cells.append({
-                    "backend": backend_cfg.name,
-                    "model": model.label,
-                    "model_id": model_id,
-                    "size": model.size,
-                    "prompt_id": prompt.id,
-                    "runs": measured,
-                    "summary": _aggregate(measured) if measured else None,
-                    "error": error,
-                })
+                    cells.append({
+                        "backend": backend_cfg.name,
+                        "model": model.label,
+                        "format": fmt,
+                        "model_id": model_id,
+                        "size": model.size,
+                        "prompt_id": prompt.id,
+                        "runs": measured,
+                        "summary": _aggregate(measured) if measured else None,
+                        "error": error,
+                    })
 
     return {
         "schema_version": 1,

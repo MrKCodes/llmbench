@@ -1,9 +1,10 @@
 # llmbench sweep definition.
 #
-# Run per machine:  llmbench run --config config/bench.yaml --machine <name>
-# The --machine value just labels the output; pick anything stable per box.
+# Run per machine:  llmbench run --config config/bench.yaml
+# A friendly label is optional: --machine "Studio Mac". The results folder is
+# named from detected hardware either way, so re-runs on a box group together.
 
-# How many times to run each (backend, model, prompt) combination.
+# How many times to run each (backend, model, format, prompt) combination.
 runs: 5
 # Extra unmeasured runs first, to load the model into memory / warm caches.
 warmup: 1
@@ -13,12 +14,13 @@ max_tokens: 512
 # Sampling temperature. Low = near-deterministic, so runs are repeatable.
 temperature: 0.2
 # Per-request timeout in seconds. Large models on slow hardware need headroom.
-timeout: 600
+# 70B/32B on RAM offload can be slow — leave generous headroom.
+timeout: 900
 
 # Backends to exercise. Disable the ones you are not running on this machine.
 # LM Studio is enabled by default: its GGUF model files copy cleanly between
-# machines, so it's the easy path for a multi-machine sweep. Enable Ollama too
-# if you have it running on a given box.
+# machines, so it's the easy path for a multi-machine sweep, and it also serves
+# MLX on Apple Silicon. Enable Ollama too if you have it running on a given box.
 backends:
   - name: lmstudio
     enabled: true
@@ -27,21 +29,96 @@ backends:
     enabled: false
     base_url: http://localhost:11434
 
-# Models to sweep. `ollama` / `lmstudio` are the identifier each backend knows
-# the model by — they differ, so set both. Leave one out to skip that model on
-# that backend. `label` is what shows up in the report.
+# Models to sweep, as a size ladder (small -> large). Decode speed is memory-
+# bandwidth-bound, so the ladder is what reveals each machine's wall.
+#
+# Per backend you can give EITHER:
+#   lmstudio: some-model-id                 # single variant, format = gguf
+# OR a list of format variants (benchmarked as separate cells that never pool):
+#   lmstudio:
+#     - { format: gguf, id: some-model-GGUF }
+#     - { format: mlx,  id: some-model-MLX }   # Apple Silicon only
+#
+# Rules of thumb for fairness:
+#   - Compare the SAME format across machines (gguf vs gguf) for hardware A/B.
+#   - Compare the SAME machine across formats (gguf vs mlx) for the Mac ceiling.
+#   - Ollama is GGUF only. MLX is Mac only; non-Mac boxes just skip it.
+#
+# IDs below are typical LM Studio / Ollama names — confirm each against what you
+# actually downloaded (LM Studio search box; `ollama list`). A missing/mistyped
+# id just produces an error row, it won't crash the sweep.
+#
+# Fit note (Q4_K_M): 16GB Macs are comfortable to ~9B, tight at 14B, and cannot
+# run >=24B. The ASUS (8GB VRAM + 32GB RAM) runs the big ones via RAM offload.
+
 models:
+  # ---- Tier A: small, fits everywhere, fast (ASUS runs these fully in VRAM) --
+  - label: gemma-3-4b
+    size: "4B"
+    ollama: gemma3:4b
+    lmstudio:
+      - { format: gguf, id: google/gemma-3-4b-it }
+      - { format: mlx,  id: mlx-community/gemma-3-4b-it-4bit }
+
   - label: qwen2.5-coder-7b
     size: "7B"
     ollama: qwen2.5-coder:7b
-    lmstudio: qwen2.5-coder-7b-instruct
-  - label: qwen2.5-coder-14b
-    size: "14B"
-    ollama: qwen2.5-coder:14b
-    lmstudio: qwen2.5-coder-14b-instruct
+    lmstudio:
+      - { format: gguf, id: qwen2.5-coder-7b-instruct }
+      - { format: mlx,  id: mlx-community/Qwen2.5-Coder-7B-Instruct-4bit }
 
-# Prompts sent to every model on every backend. Keep them representative of the
-# work you actually care about. Each gets `runs` measured iterations.
+  - label: llama-3.1-8b
+    size: "8B"
+    ollama: llama3.1:8b
+    lmstudio:
+      - { format: gguf, id: meta-llama-3.1-8b-instruct }
+      - { format: mlx,  id: mlx-community/Meta-Llama-3.1-8B-Instruct-4bit }
+
+  # ---- Tier B: cap-stress on 16GB Macs (tight), hybrid on ASUS ---------------
+  - label: gemma-3-12b
+    size: "12B"
+    ollama: gemma3:12b
+    lmstudio:
+      - { format: gguf, id: google/gemma-3-12b-it }
+      - { format: mlx,  id: mlx-community/gemma-3-12b-it-4bit }
+
+  - label: qwen2.5-14b
+    size: "14B"
+    ollama: qwen2.5:14b
+    lmstudio:
+      - { format: gguf, id: qwen2.5-14b-instruct }
+      - { format: mlx,  id: mlx-community/Qwen2.5-14B-Instruct-4bit }
+
+  - label: phi-4
+    size: "14B"
+    ollama: phi4:latest
+    lmstudio:
+      - { format: gguf, id: microsoft/phi-4 }
+      - { format: mlx,  id: mlx-community/phi-4-4bit }
+
+  # ---- Tier C: ASUS only (won't fit on 16GB Macs at Q4) ----------------------
+  - label: gemma-3-27b
+    size: "27B"
+    ollama: gemma3:27b
+    lmstudio:
+      - { format: gguf, id: google/gemma-3-27b-it }
+
+  - label: qwen2.5-32b
+    size: "32B"
+    ollama: qwen2.5:32b
+    lmstudio:
+      - { format: gguf, id: qwen2.5-32b-instruct }
+
+  # ---- Wildcard: MoE, 30B total but ~3B active -> fast decode for its size ---
+  - label: qwen3-30b-a3b
+    size: "30B-MoE"
+    ollama: qwen3:30b-a3b
+    lmstudio:
+      - { format: gguf, id: qwen/qwen3-30b-a3b }
+      - { format: mlx,  id: mlx-community/Qwen3-30B-A3B-4bit }
+
+# Prompts sent to every model variant on every backend. Keep them representative
+# of the work you care about. Each gets `runs` measured iterations.
 prompts:
   - id: fib-memo
     text: >-
