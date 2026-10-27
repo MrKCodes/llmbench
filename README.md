@@ -131,12 +131,30 @@ remote host also works, but then TTFT and total time include network latency.
 
 One `session-*.json` per `llmbench run`, under a per-machine folder.
 Self-describing: it carries the hardware profile (including the stable `slug`),
-the config used, every raw run, and the aggregated stats. Safe to commit so the
-report and dashboard can be regenerated later.
+the config used, every raw run, and the aggregated stats. **This JSON is the
+lightweight source of truth** — the Markdown report and HTML dashboard are just
+rendered views of it, so you commit the JSON, not the HTML.
+
+## Publishing to GitHub Pages (CI)
+
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) consolidates every
+committed session into one dashboard and publishes it. The flow:
+
+```
+run on each machine ─▶ commit results/<slug>/session-*.json ─▶ CI rebuilds
+    the combined dashboard from ALL sessions ─▶ GitHub Pages
+```
+
+The generated `report.md` and `*.html` are git-ignored — only the small JSON is
+committed, and CI regenerates the HTML on every push (stdlib-only, no deps).
+To enable it once: repo **Settings → Pages → Source → GitHub Actions**. Then any
+push that touches `results/**/*.json` republishes the site; you can also trigger
+it manually from the Actions tab.
 
 ## Layout
 
 ```
+.github/workflows/pages.yml  CI: consolidate sessions -> dashboard -> Pages
 config/bench.sample.yaml  tracked template; copy to config/bench.yaml and edit
 llmbench/
   cli.py               `run`, `report`, `dashboard` commands

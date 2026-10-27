@@ -1,0 +1,63 @@
+# Consolidate every committed benchmark session into one dashboard and publish
+# it to GitHub Pages. The lightweight source of truth is the session JSON under
+# results/ that `llmbench run` writes; this job rebuilds the HTML from all of
+# them, so no generated HTML is ever committed.
+#
+# One-time setup: repo Settings -> Pages -> Build and deployment -> Source =
+# "GitHub Actions".
+name: Publish dashboard to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "results/**/*.json"   # new/updated benchmark sessions
+      - "llmbench/**"         # renderer changes
+      - ".github/workflows/pages.yml"
+  workflow_dispatch: {}        # allow manual rebuilds
+
+# Least privilege: only what Pages deployment needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One live deployment at a time; don't cancel an in-flight publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Core install only — report/dashboard are standard-library-only, so no
+      # third-party packages are installed here.
+      - run: pip install .
+
+      - name: Build consolidated dashboard
+        run: |
+          mkdir -p site
+          python -m llmbench dashboard --results results --out site/index.html
+          # A Markdown report alongside it, handy for linking/diffing.
+          python -m llmbench report --results results --out site/report.md
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

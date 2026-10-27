@@ -11,6 +11,12 @@ dist/
 # The sample is tracked; your edited copy is not, so sweeps never clobber it.
 config/bench.yaml
 
+# llmbench: locally generated reports. The committed session JSON under
+# results/ is the lightweight source of truth; CI rebuilds these for GitHub
+# Pages, so your local HTML/Markdown copies are never committed.
+/report.md
+/*.html
+
 # llmbench: full generation text dumps (opt-in via --save-output) can get large
 results/raw/
 
