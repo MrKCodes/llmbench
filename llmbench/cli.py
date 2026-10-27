@@ -8,12 +8,24 @@ import os
 import sys
 import time
 
-from . import __version__, config as config_mod
-from .report import build_report
-from .runner import run_sweep
+from . import __version__
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
+    # Imported here, not at module top, so `report` and `dashboard` stay
+    # dependency-free. Only `run` needs the config loader (pyyaml) and the
+    # runner (which pulls in the backends and `requests`); a CI job that only
+    # renders reports can run with the standard library alone.
+    try:
+        from . import config as config_mod
+        from .runner import run_sweep
+    except ModuleNotFoundError as exc:
+        raise SystemExit(
+            f"'llmbench run' needs the sweep dependencies ({exc.name}). "
+            f"Install them with:  pip install -e '.[run]'   "
+            f"(or: pip install -r requirements.txt)"
+        )
+
     cfg = config_mod.load(args.config)
 
     # machine_label is optional; hardware.detect() falls back to the hostname.
@@ -43,6 +55,8 @@ def _cmd_run(args: argparse.Namespace) -> int:
 
 
 def _cmd_report(args: argparse.Namespace) -> int:
+    from .report import build_report
+
     md = build_report(args.results)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(md)

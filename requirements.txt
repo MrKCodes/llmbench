@@ -1,2 +1,7 @@
+# Dependencies for RUNNING a sweep (`llmbench run`) on a benchmark machine.
+#
+# `llmbench report` and `llmbench dashboard` need NONE of these — they render
+# from result JSON with the standard library alone, so a CI/Pages job can skip
+# installing anything. Equivalent extra: `pip install -e .[run]`.
 requests>=2.28
 pyyaml>=6.0

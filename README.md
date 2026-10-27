@@ -28,16 +28,24 @@ guessing.
 
 ## Install
 
+Requires Python 3.9+. The install splits by what you're doing:
+
 ```bash
 git clone <your-repo-url> llmbench
 cd llmbench
 python3 -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-# optional, gives you the `llmbench` command:
+
+# On a machine that will RUN benchmarks (pulls in requests + pyyaml):
+pip install -e '.[run]'          # or: pip install -r requirements.txt
+
+# To ONLY build reports/dashboards (e.g. CI / GitHub Pages): no deps at all
 pip install -e .
 ```
 
-Requires Python 3.9+. Only two dependencies: `requests` and `pyyaml`.
+`llmbench report` and `llmbench dashboard` read result JSON and render with the
+standard library alone — **no third-party dependencies**. Only `llmbench run`
+needs `requests` (backends) and `pyyaml` (config), which is why they live in the
+`[run]` extra. This keeps a CI reporting job dependency-free and fast.
 
 ## Quick start
 

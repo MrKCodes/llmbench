@@ -9,7 +9,15 @@ description = "Benchmark local LLM inference across machines and backends, with 
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-dependencies = [
+# Core install is dependency-free: `llmbench report` and `llmbench dashboard`
+# read result JSON and render with the standard library only. The extra deps
+# are only needed to run a sweep.
+dependencies = []
+
+[project.optional-dependencies]
+# `pip install llmbench[run]` on a machine that will actually benchmark.
+# pyyaml parses the config; requests drives the backends.
+run = [
     "requests>=2.28",
     "pyyaml>=6.0",
 ]
