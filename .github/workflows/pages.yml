@@ -42,11 +42,22 @@ jobs:
       - run: pip install .
 
       - name: Build consolidated dashboard
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p site
-          python -m llmbench dashboard --results results --out site/index.html
-          # A Markdown report alongside it, handy for linking/diffing.
-          python -m llmbench report --results results --out site/report.md
+          # Count committed session JSONs (recursively, excluding none).
+          count=$(find results -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            # No sessions committed yet: publish a self-explaining placeholder
+            # rather than failing the deploy. Rebuilds once a result lands.
+            echo "No committed session JSON under results/ — publishing placeholder."
+            python scripts/placeholder_page.py site/index.html
+          else
+            echo "Building dashboard from $count session file(s)."
+            python -m llmbench dashboard --results results --out site/index.html
+            python -m llmbench report --results results --out site/report.md
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
