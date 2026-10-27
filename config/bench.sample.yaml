@@ -28,6 +28,14 @@ timeout: 900
 # LM Studio is enabled by default: its GGUF model files copy cleanly between
 # machines, so it's the easy path for a multi-machine sweep, and it also serves
 # MLX on Apple Silicon. Enable Ollama too if you have it running on a given box.
+#
+# IMPORTANT: each model variant below must actually be DOWNLOADED in the
+# backend, or llmbench skips it with an error row. (LM Studio will otherwise
+# answer with whatever model is loaded, no matter what id you request — so
+# llmbench checks the server's model list and the model that actually answered,
+# and refuses to record a result from a substituted model.) In LM Studio you do
+# not need to pre-load each one in the GUI; just have them downloaded and leave
+# JIT model loading on, and the server loads each on demand.
 backends:
   - name: lmstudio
     enabled: true

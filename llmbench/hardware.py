@@ -130,7 +130,28 @@ def _gpus() -> List[str]:
 
 
 def _hostname() -> str:
-    return socket.gethostname().split(".")[0] or "host"
+    """A stable, human-recognizable machine name.
+
+    `socket.gethostname()` on macOS can fall back to `Unknown_<MAC-address>`
+    when no hostname is configured — useless and non-stable in a slug. Prefer
+    the user-set ComputerName there, and reject the Unknown fallback on any OS.
+    """
+    candidates = []
+    if platform.system() == "Darwin":
+        # user-facing name, e.g. "Mac mini"; falls back cleanly if unset
+        candidates.append(_run(["scutil", "--get", "ComputerName"]))
+        candidates.append(_run(["scutil", "--get", "LocalHostName"]))
+    candidates.append(socket.gethostname())
+
+    for name in candidates:
+        if not name:
+            continue
+        short = name.split(".")[0].strip()
+        # Reject macOS's "Unknown_aa:bb:..." MAC-address fallback.
+        if not short or short.lower().startswith("unknown"):
+            continue
+        return short
+    return "host"
 
 
 def _slugify(text: str) -> str:

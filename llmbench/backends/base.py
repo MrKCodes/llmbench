@@ -8,7 +8,7 @@ after-the-fact guess.
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 
 @dataclass
@@ -30,6 +30,11 @@ class RunMetrics:
     # Backend-reported speed when available (e.g. Ollama's own ns counters),
     # for cross-checking our wall-clock number. None if the backend is silent.
     backend_tokens_per_s: Optional[float] = None
+    # Model id the backend reports actually served the request. If it differs
+    # from what we asked for, the backend substituted a different (e.g. the only
+    # loaded) model — the result is NOT for the requested model. None if the
+    # backend doesn't echo it.
+    served_model: Optional[str] = None
     output_text: Optional[str] = None  # populated only when --save-output
 
     def to_dict(self) -> Dict:
@@ -68,4 +73,14 @@ class Backend:
 
     def health(self) -> bool:
         """Return True if the server looks reachable. Best-effort."""
+        raise NotImplementedError
+
+    def available_models(self) -> Optional[List[str]]:
+        """Model ids the server currently exposes, or None if it can't be read.
+
+        Used to gate a benchmark: many backends (notably LM Studio) silently
+        serve whatever model is loaded when asked for an unknown id, returning a
+        normal 200. Checking availability first prevents recording a result that
+        was actually produced by a different model.
+        """
         raise NotImplementedError

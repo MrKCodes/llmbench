@@ -24,6 +24,31 @@ def _aggregate(runs: List[Dict]) -> Dict:
     }
 
 
+def _ids_match(requested: str, other: str) -> bool:
+    """True if two model ids refer to the same model, tolerant of prefixes.
+
+    Backends often normalize an id (drop the publisher prefix, lowercase), so
+    `google/gemma-3-4b-it` and `gemma-3-4b-it` are the same model. But distinct
+    variants must stay distinct: `gemma-3-4b-it` (GGUF) and
+    `gemma-3-4b-it-4bit` (MLX) share a prefix yet are different models, so we
+    compare the full final path segment, not a prefix.
+    """
+    if requested is None or other is None:
+        return False
+    a = requested.strip().lower()
+    b = other.strip().lower()
+    if a == b:
+        return True
+    return a.split("/")[-1] == b.split("/")[-1]
+
+
+def _model_available(model_id: str, available: Optional[List[str]]) -> Optional[bool]:
+    """Is model_id served by the backend? None if the list couldn't be read."""
+    if available is None:
+        return None
+    return any(_ids_match(model_id, a) for a in available)
+
+
 def run_sweep(
     config: Config,
     machine_label: str,
@@ -53,18 +78,48 @@ def run_sweep(
         if not reachable:
             continue
 
+        # Ask the server which models it actually has loaded/available. Some
+        # backends (LM Studio) silently serve the one loaded model when asked
+        # for an unknown id and return 200 — so we must gate on this list, not
+        # trust the request. None means the list couldn't be read; we fall back
+        # to a per-response served-model check in that case.
+        available = backend.available_models()
+        if available is not None:
+            log(f"  available models ({len(available)}): "
+                + (", ".join(available) if available else "(none loaded)"))
+
         for model in config.models:
             # Each (format, id) variant is benchmarked separately so that, e.g.,
             # the GGUF and MLX builds of a model on a Mac never pool together.
             for fmt, model_id in model.variants.get(backend_cfg.name, []):
+                # Gate: skip a variant the server does not actually serve, so we
+                # never record a result produced by a substituted model.
+                avail = _model_available(model_id, available)
+                gated = avail is False
+
                 for prompt in config.prompts:
                     label = (f"{backend_cfg.name} / {model.label} / {fmt} / "
                              f"{prompt.id}")
+
+                    if gated:
+                        msg = (f"model not available on server: {model_id!r} "
+                               f"not in loaded models")
+                        log(f"  {label}: SKIP ({msg})")
+                        cells.append({
+                            "backend": backend_cfg.name,
+                            "model": model.label, "format": fmt,
+                            "model_id": model_id, "size": model.size,
+                            "prompt_id": prompt.id, "runs": [],
+                            "summary": None, "error": msg,
+                        })
+                        continue
+
                     log(f"  {label}: warmup x{config.warmup}, "
                         f"measure x{config.runs}")
 
                     error: Optional[str] = None
                     measured: List[Dict] = []
+                    served_seen: Optional[str] = None
                     try:
                         for _ in range(config.warmup):
                             backend.generate(
@@ -76,6 +131,17 @@ def run_sweep(
                                 model_id, prompt.text,
                                 config.temperature, config.max_tokens,
                             )
+                            # Defense in depth: if the backend reports which
+                            # model answered and it isn't the one we asked for,
+                            # the server substituted a different model. Reject.
+                            if (m.served_model
+                                    and not _ids_match(model_id, m.served_model)):
+                                raise RuntimeError(
+                                    f"backend served {m.served_model!r} when "
+                                    f"asked for {model_id!r} — model not loaded; "
+                                    f"result discarded"
+                                )
+                            served_seen = m.served_model or served_seen
                             d = m.to_dict()
                             if not (save_output and i == 0):
                                 d.pop("output_text", None)
@@ -88,6 +154,7 @@ def run_sweep(
                                 f"{m.completion_tokens} tok")
                     except Exception as exc:  # noqa: BLE001 - record, continue
                         error = f"{type(exc).__name__}: {exc}"
+                        measured = []  # discard partials from a substituted model
                         log(f"    ERROR: {error}")
 
                     cells.append({
@@ -95,6 +162,7 @@ def run_sweep(
                         "model": model.label,
                         "format": fmt,
                         "model_id": model_id,
+                        "served_model": served_seen,
                         "size": model.size,
                         "prompt_id": prompt.id,
                         "runs": measured,
@@ -103,7 +171,7 @@ def run_sweep(
                     })
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "machine": hw,
         "config": {
             "runs": config.runs,

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Optional
+from typing import List, Optional
 
 import requests
 
@@ -27,6 +27,17 @@ class LMStudioBackend(Backend):
             return r.status_code == 200
         except requests.RequestException:
             return False
+
+    def available_models(self) -> Optional[List[str]]:
+        try:
+            r = requests.get(f"{self.base_url}/v1/models", timeout=5)
+            if r.status_code != 200:
+                return None
+            data = r.json()
+        except (requests.RequestException, ValueError):
+            return None
+        # OpenAI-compatible shape: {"data": [{"id": "..."}, ...]}
+        return [m.get("id") for m in data.get("data", []) if m.get("id")]
 
     def generate(
         self,
@@ -51,6 +62,7 @@ class LMStudioBackend(Backend):
         chunks = []
         delta_count = 0
         usage = {}
+        served_model: Optional[str] = None
 
         headers = {"Content-Type": "application/json"}
         with requests.post(
@@ -71,6 +83,9 @@ class LMStudioBackend(Backend):
                 if data == "[DONE]":
                     break
                 obj = json.loads(data)
+                # Every chunk carries the id of the model that actually answered.
+                if served_model is None and obj.get("model"):
+                    served_model = obj["model"]
                 if obj.get("usage"):
                     usage = obj["usage"]
                 for choice in obj.get("choices", []):
@@ -97,5 +112,6 @@ class LMStudioBackend(Backend):
             completion_tokens=completion_tokens,
             gen_tokens_per_s=compute_gen_tps(completion_tokens, total, ttft),
             backend_tokens_per_s=None,  # LM Studio has no separate server timing
+            served_model=served_model,
             output_text="".join(chunks),
         )
