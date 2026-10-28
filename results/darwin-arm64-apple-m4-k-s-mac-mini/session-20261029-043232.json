@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "K\u2019s Mac mini",
+    "label": "K\u2019s Mac mini",
+    "os": "Darwin 24.6.0",
+    "os_version": "Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8132",
+    "arch": "arm64",
+    "cpu": "Apple M4",
+    "ram_gb": 16.0,
+    "gpus": [
+      "Apple M4 GPU (10 cores)"
+    ],
+    "python": "3.13.7",
+    "slug": "darwin-arm64-apple-m4-k-s-mac-mini"
+  },
+  "config": {
+    "runs": 5,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793228552.598764,
+  "finished_unix": 1793228552.603078,
+  "cells": []
+}
