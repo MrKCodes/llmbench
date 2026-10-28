@@ -1,0 +1,182 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "Cassandra_SRIS",
+    "label": "Cassandra_SRIS",
+    "os": "Windows 11",
+    "os_version": "10.0.26200",
+    "arch": "AMD64",
+    "cpu": "AMD64 Family 25 Model 124 Stepping 0, AuthenticAMD",
+    "ram_gb": null,
+    "gpus": [
+      "unknown"
+    ],
+    "python": "3.14.7",
+    "slug": "windows-amd64-amd64-family-25--cassandra-sris"
+  },
+  "config": {
+    "runs": 3,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793214477.9846425,
+  "finished_unix": 1793214896.1627402,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b-it-qat",
+      "served_model": "gemma-3-4b-it-qat",
+      "size": "4B",
+      "prompt_id": "fib-memo",
+      "runs": [
+        {
+          "ttft_s": 2.620931399986148,
+          "total_s": 65.9430854000384,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 8.08563776904332,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 2.547229600022547,
+          "total_s": 65.22891960002016,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 8.168254557272139,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 2.5407470000209287,
+          "total_s": 71.031442000065,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 7.475468017950037,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 8.08563776904332,
+          "mean": 7.909786781421832,
+          "p95": 8.159992878449257,
+          "min": 7.475468017950037,
+          "max": 8.168254557272139,
+          "stdev": 0.3089562802426507,
+          "n": 3
+        },
+        "ttft_s": {
+          "median": 2.547229600022547,
+          "mean": 2.5696360000098744,
+          "p95": 2.613561219989788,
+          "min": 2.5407470000209287,
+          "max": 2.620931399986148,
+          "stdev": 0.03636774733872167,
+          "n": 3
+        },
+        "total_s": {
+          "median": 65.9430854000384,
+          "mean": 67.40114900004119,
+          "p95": 70.52260634006234,
+          "min": 65.22891960002016,
+          "max": 71.031442000065,
+          "stdev": 2.5835090667533747,
+          "n": 3
+        },
+        "completion_tokens": {
+          "median": 512.0,
+          "mean": 512.0,
+          "p95": 512.0,
+          "min": 512.0,
+          "max": 512.0,
+          "stdev": 0.0,
+          "n": 3
+        }
+      },
+      "error": null
+    },
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b-it-qat",
+      "served_model": "gemma-3-4b-it-qat",
+      "size": "4B",
+      "prompt_id": "explain-uma",
+      "runs": [
+        {
+          "ttft_s": 2.652328399941325,
+          "total_s": 35.4196263999911,
+          "prompt_tokens": 35,
+          "completion_tokens": 266,
+          "gen_tokens_per_s": 8.117849692690434,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 2.613021499942988,
+          "total_s": 33.34827680001035,
+          "prompt_tokens": 35,
+          "completion_tokens": 253,
+          "gen_tokens_per_s": 8.23158934357202,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 2.5250647000502795,
+          "total_s": 33.3443271999713,
+          "prompt_tokens": 35,
+          "completion_tokens": 253,
+          "gen_tokens_per_s": 8.209151662881236,
+          "backend_tokens_per_s": null,
+          "served_model": "gemma-3-4b-it-qat"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 8.209151662881236,
+          "mean": 8.186196899714563,
+          "p95": 8.229345575502942,
+          "min": 8.117849692690434,
+          "max": 8.23158934357202,
+          "stdev": 0.04918921229764903,
+          "n": 3
+        },
+        "ttft_s": {
+          "median": 2.613021499942988,
+          "mean": 2.5968048666448644,
+          "p95": 2.6483977099414915,
+          "min": 2.5250647000502795,
+          "max": 2.652328399941325,
+          "stdev": 0.05320555562554159,
+          "n": 3
+        },
+        "total_s": {
+          "median": 33.34827680001035,
+          "mean": 34.03741013332425,
+          "p95": 35.21249143999303,
+          "min": 33.3443271999713,
+          "max": 35.4196263999911,
+          "stdev": 0.9773758252633935,
+          "n": 3
+        },
+        "completion_tokens": {
+          "median": 253.0,
+          "mean": 257.3333333333333,
+          "p95": 264.7,
+          "min": 253.0,
+          "max": 266.0,
+          "stdev": 6.128258770283412,
+          "n": 3
+        }
+      },
+      "error": null
+    }
+  ]
+}
