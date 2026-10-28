@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "c889f3ed1c96",
+    "label": "c889f3ed1c96",
+    "os": "Darwin 25.6.0",
+    "os_version": "Darwin Kernel Version 25.6.0: Tue Aug 18 17:49:13 PDT 2026; root:xnu-12377.161.15.700.19~2/RELEASE_ARM64_T6000",
+    "arch": "arm64",
+    "cpu": "Apple M1 Pro",
+    "ram_gb": 16.0,
+    "gpus": [
+      "Apple M1 Pro GPU (14 cores)"
+    ],
+    "python": "3.14.6",
+    "slug": "darwin-arm64-apple-m1-pro-c889f3ed1c96"
+  },
+  "config": {
+    "runs": 5,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793227979.3548841,
+  "finished_unix": 1793227979.371819,
+  "cells": []
+}

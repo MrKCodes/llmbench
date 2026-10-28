@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "c889f3ed1c96",
+    "label": "c889f3ed1c96",
+    "os": "Darwin 25.6.0",
+    "os_version": "Darwin Kernel Version 25.6.0: Tue Aug 18 17:49:13 PDT 2026; root:xnu-12377.161.15.700.19~2/RELEASE_ARM64_T6000",
+    "arch": "arm64",
+    "cpu": "Apple M1 Pro",
+    "ram_gb": 16.0,
+    "gpus": [
+      "Apple M1 Pro GPU (14 cores)"
+    ],
+    "python": "3.14.6",
+    "slug": "darwin-arm64-apple-m1-pro-c889f3ed1c96"
+  },
+  "config": {
+    "runs": 5,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793228079.5118332,
+  "finished_unix": 1793228176.948973,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "mlx",
+      "model_id": "mlx-community/gemma-3-4b-it-qat",
+      "served_model": "mlx-community/gemma-3-4b-it-qat",
+      "size": "4B",
+      "prompt_id": "fib-memo",
+      "runs": [
+        {
+          "ttft_s": 0.17342566698789597,
+          "total_s": 10.130637666967232,
+          "prompt_tokens": 37,
+          "completion_tokens": 511,
+          "gen_tokens_per_s": 51.31958624573429,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.13881804200354964,
+          "total_s": 10.218944958993234,
+          "prompt_tokens": 37,
+          "completion_tokens": 511,
+          "gen_tokens_per_s": 50.69380616019112,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.1541549590183422,
+          "total_s": 10.117328250024002,
+          "prompt_tokens": 37,
+          "completion_tokens": 511,
+          "gen_tokens_per_s": 51.28888006608393,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.14930079103214666,
+          "total_s": 10.118608916003723,
+          "prompt_tokens": 37,
+          "completion_tokens": 511,
+          "gen_tokens_per_s": 51.25731832081947,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.131525042001158,
+          "total_s": 10.049303959007375,
+          "prompt_tokens": 37,
+          "completion_tokens": 511,
+          "gen_tokens_per_s": 51.52363288959567,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 51.28888006608393,
+          "mean": 51.216644736484895,
+          "p95": 51.48282356082339,
+          "min": 50.69380616019112,
+          "max": 51.52363288959567,
+          "stdev": 0.2775143746340748,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.14930079103214666,
+          "mean": 0.1494449002086185,
+          "p95": 0.1695715253939852,
+          "min": 0.131525042001158,
+          "max": 0.17342566698789597,
+          "stdev": 0.014361991716012273,
+          "n": 5
+        },
+        "total_s": {
+          "median": 10.118608916003723,
+          "mean": 10.126964750199113,
+          "p95": 10.201283500588033,
+          "min": 10.049303959007375,
+          "max": 10.218944958993234,
+          "stdev": 0.05416221878144964,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 511.0,
+          "mean": 511.0,
+          "p95": 511.0,
+          "min": 511.0,
+          "max": 511.0,
+          "stdev": 0.0,
+          "n": 5
+        }
+      },
+      "error": null
+    },
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "mlx",
+      "model_id": "mlx-community/gemma-3-4b-it-qat",
+      "served_model": "mlx-community/gemma-3-4b-it-qat",
+      "size": "4B",
+      "prompt_id": "explain-uma",
+      "runs": [
+        {
+          "ttft_s": 0.16412533400580287,
+          "total_s": 5.586692833981942,
+          "prompt_tokens": 35,
+          "completion_tokens": 288,
+          "gen_tokens_per_s": 53.11137205784294,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.16830204101279378,
+          "total_s": 5.3563985410146415,
+          "prompt_tokens": 35,
+          "completion_tokens": 276,
+          "gen_tokens_per_s": 53.19870206729996,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.1692122090025805,
+          "total_s": 5.443077208998147,
+          "prompt_tokens": 35,
+          "completion_tokens": 280,
+          "gen_tokens_per_s": 53.09199230549803,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.16991941595915705,
+          "total_s": 5.281525665952358,
+          "prompt_tokens": 35,
+          "completion_tokens": 272,
+          "gen_tokens_per_s": 53.21223636902036,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        },
+        {
+          "ttft_s": 0.16862487501930445,
+          "total_s": 5.1654473330127075,
+          "prompt_tokens": 35,
+          "completion_tokens": 266,
+          "gen_tokens_per_s": 53.23383054654674,
+          "backend_tokens_per_s": null,
+          "served_model": "mlx-community/gemma-3-4b-it-qat"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 53.19870206729996,
+          "mean": 53.16962666924161,
+          "p95": 53.22951171104146,
+          "min": 53.09199230549803,
+          "max": 53.23383054654674,
+          "stdev": 0.0569276687237045,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.16862487501930445,
+          "mean": 0.16803677499992772,
+          "p95": 0.16977797456784174,
+          "min": 0.16412533400580287,
+          "max": 0.16991941595915705,
+          "stdev": 0.0020318258004491142,
+          "n": 5
+        },
+        "total_s": {
+          "median": 5.3563985410146415,
+          "mean": 5.366628316591959,
+          "p95": 5.557969708985183,
+          "min": 5.1654473330127075,
+          "max": 5.586692833981942,
+          "stdev": 0.14289417243007674,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 276.0,
+          "mean": 276.4,
+          "p95": 286.4,
+          "min": 266.0,
+          "max": 288.0,
+          "stdev": 7.418894796396563,
+          "n": 5
+        }
+      },
+      "error": null
+    }
+  ]
+}
