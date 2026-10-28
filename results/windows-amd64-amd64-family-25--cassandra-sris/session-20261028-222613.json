@@ -1,0 +1,182 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "Cassandra_SRIS",
+    "label": "Cassandra_SRIS",
+    "os": "Windows 11",
+    "os_version": "10.0.26200",
+    "arch": "AMD64",
+    "cpu": "AMD64 Family 25 Model 124 Stepping 0, AuthenticAMD",
+    "ram_gb": null,
+    "gpus": [
+      "unknown"
+    ],
+    "python": "3.14.7",
+    "slug": "windows-amd64-amd64-family-25--cassandra-sris"
+  },
+  "config": {
+    "runs": 3,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793206091.794143,
+  "finished_unix": 1793206573.675711,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "qwen2.5-coder-7b",
+      "format": "gguf",
+      "model_id": "qwen2.5-coder-7b-instruct",
+      "served_model": "qwen2.5-coder-7b-instruct",
+      "size": "7B",
+      "prompt_id": "fib-memo",
+      "runs": [
+        {
+          "ttft_s": 2.2236952000530437,
+          "total_s": 72.75118000002112,
+          "prompt_tokens": 58,
+          "completion_tokens": 469,
+          "gen_tokens_per_s": 6.649889774606173,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        },
+        {
+          "ttft_s": 2.2922625000355765,
+          "total_s": 80.62977950007189,
+          "prompt_tokens": 58,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 6.535821144289812,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        },
+        {
+          "ttft_s": 2.306873199995607,
+          "total_s": 65.93222780001815,
+          "prompt_tokens": 58,
+          "completion_tokens": 413,
+          "gen_tokens_per_s": 6.491122958705737,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 6.535821144289812,
+          "mean": 6.558944625867241,
+          "p95": 6.638482911574537,
+          "min": 6.491122958705737,
+          "max": 6.649889774606173,
+          "stdev": 0.06684682494572693,
+          "n": 3
+        },
+        "ttft_s": {
+          "median": 2.2922625000355765,
+          "mean": 2.2742769666947424,
+          "p95": 2.3054121299996044,
+          "min": 2.2236952000530437,
+          "max": 2.306873199995607,
+          "stdev": 0.036260671769627245,
+          "n": 3
+        },
+        "total_s": {
+          "median": 72.75118000002112,
+          "mean": 73.10439576670372,
+          "p95": 79.84191955006682,
+          "min": 65.93222780001815,
+          "max": 80.62977950007189,
+          "stdev": 6.005446279687186,
+          "n": 3
+        },
+        "completion_tokens": {
+          "median": 469.0,
+          "mean": 464.6666666666667,
+          "p95": 507.7,
+          "min": 413.0,
+          "max": 512.0,
+          "stdev": 40.5325657822064,
+          "n": 3
+        }
+      },
+      "error": null
+    },
+    {
+      "backend": "lmstudio",
+      "model": "qwen2.5-coder-7b",
+      "format": "gguf",
+      "model_id": "qwen2.5-coder-7b-instruct",
+      "served_model": "qwen2.5-coder-7b-instruct",
+      "size": "7B",
+      "prompt_id": "explain-uma",
+      "runs": [
+        {
+          "ttft_s": 2.237254900042899,
+          "total_s": 55.60928460001014,
+          "prompt_tokens": 56,
+          "completion_tokens": 358,
+          "gen_tokens_per_s": 6.70763323059868,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        },
+        {
+          "ttft_s": 2.238246600027196,
+          "total_s": 50.49471400002949,
+          "prompt_tokens": 56,
+          "completion_tokens": 323,
+          "gen_tokens_per_s": 6.693403338512605,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        },
+        {
+          "ttft_s": 2.209727799985558,
+          "total_s": 57.11531339993235,
+          "prompt_tokens": 56,
+          "completion_tokens": 365,
+          "gen_tokens_per_s": 6.64777537679798,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 6.693403338512605,
+          "mean": 6.682937315303088,
+          "p95": 6.706210241390073,
+          "min": 6.64777537679798,
+          "max": 6.70763323059868,
+          "stdev": 0.025532905524350457,
+          "n": 3
+        },
+        "ttft_s": {
+          "median": 2.237254900042899,
+          "mean": 2.2284097666852176,
+          "p95": 2.2381474300287665,
+          "min": 2.209727799985558,
+          "max": 2.238246600027196,
+          "stdev": 0.013216347882833409,
+          "n": 3
+        },
+        "total_s": {
+          "median": 55.60928460001014,
+          "mean": 54.40643733332399,
+          "p95": 56.96471051994013,
+          "min": 50.49471400002949,
+          "max": 57.11531339993235,
+          "stdev": 2.8335155153659413,
+          "n": 3
+        },
+        "completion_tokens": {
+          "median": 358.0,
+          "mean": 348.6666666666667,
+          "p95": 364.29999999999995,
+          "min": 323.0,
+          "max": 365.0,
+          "stdev": 18.372685039360892,
+          "n": 3
+        }
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "Cassandra_SRIS",
+    "label": "Cassandra_SRIS",
+    "os": "Windows 11",
+    "os_version": "10.0.26200",
+    "arch": "AMD64",
+    "cpu": "AMD64 Family 25 Model 124 Stepping 0, AuthenticAMD",
+    "ram_gb": null,
+    "gpus": [
+      "unknown"
+    ],
+    "python": "3.14.7",
+    "slug": "windows-amd64-amd64-family-25--cassandra-sris"
+  },
+  "config": {
+    "runs": 3,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793214419.4147549,
+  "finished_unix": 1793214423.5321217,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b-it",
+      "size": "4B",
+      "prompt_id": "fib-memo",
+      "runs": [],
+      "summary": null,
+      "error": "model not available on server: 'google/gemma-3-4b-it' not in loaded models"
+    },
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b-it",
+      "size": "4B",
+      "prompt_id": "explain-uma",
+      "runs": [],
+      "summary": null,
+      "error": "model not available on server: 'google/gemma-3-4b-it' not in loaded models"
+    }
+  ]
+}
