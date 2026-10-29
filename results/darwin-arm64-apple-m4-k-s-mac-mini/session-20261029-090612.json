@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "K\u2019s Mac mini",
+    "label": "K\u2019s Mac mini",
+    "os": "Darwin 27.2.0",
+    "os_version": "Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:07 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T8132",
+    "arch": "arm64",
+    "cpu": "Apple M4",
+    "ram_gb": 16.0,
+    "gpus": [
+      "Apple M4 GPU (10 cores)"
+    ],
+    "python": "3.13.7",
+    "slug": "darwin-arm64-apple-m4-k-s-mac-mini"
+  },
+  "config": {
+    "runs": 5,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793244804.298243,
+  "finished_unix": 1793244972.7022238,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "qwen2.5-coder-7b",
+      "format": "mlx",
+      "model_id": "qwen2.5-coder-7b-instruct-mlx",
+      "served_model": "qwen2.5-coder-7b-instruct-mlx",
+      "size": "7B",
+      "prompt_id": "fib-memo",
+      "runs": [
+        {
+          "ttft_s": 0.2664651249997405,
+          "total_s": 18.35405670899945,
+          "prompt_tokens": 58,
+          "completion_tokens": 441,
+          "gen_tokens_per_s": 24.38135546968612,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.26786662500035163,
+          "total_s": 17.69235070800005,
+          "prompt_tokens": 58,
+          "completion_tokens": 424,
+          "gen_tokens_per_s": 24.333575558410832,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.27299404199948185,
+          "total_s": 14.413247458999649,
+          "prompt_tokens": 58,
+          "completion_tokens": 340,
+          "gen_tokens_per_s": 24.044830737703318,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.27208491700002924,
+          "total_s": 19.484257375000197,
+          "prompt_tokens": 58,
+          "completion_tokens": 463,
+          "gen_tokens_per_s": 24.09930480335666,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.27168908400017244,
+          "total_s": 18.70163700000012,
+          "prompt_tokens": 58,
+          "completion_tokens": 443,
+          "gen_tokens_per_s": 24.03696429415353,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 24.09930480335666,
+          "mean": 24.17920617266209,
+          "p95": 24.371799487431062,
+          "min": 24.03696429415353,
+          "max": 24.38135546968612,
+          "stdev": 0.14789725074026164,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.27168908400017244,
+          "mean": 0.2702199585999551,
+          "p95": 0.27281221699959135,
+          "min": 0.2664651249997405,
+          "max": 0.27299404199948185,
+          "stdev": 0.0025678353677533075,
+          "n": 5
+        },
+        "total_s": {
+          "median": 18.35405670899945,
+          "mean": 17.729109850199894,
+          "p95": 19.327733300000183,
+          "min": 14.413247458999649,
+          "max": 19.484257375000197,
+          "stdev": 1.755745146605628,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 441.0,
+          "mean": 422.2,
+          "p95": 459.0,
+          "min": 340.0,
+          "max": 463.0,
+          "stdev": 42.9203914241238,
+          "n": 5
+        }
+      },
+      "error": null
+    },
+    {
+      "backend": "lmstudio",
+      "model": "qwen2.5-coder-7b",
+      "format": "mlx",
+      "model_id": "qwen2.5-coder-7b-instruct-mlx",
+      "served_model": "qwen2.5-coder-7b-instruct-mlx",
+      "size": "7B",
+      "prompt_id": "explain-uma",
+      "runs": [
+        {
+          "ttft_s": 0.17810658300004434,
+          "total_s": 6.938041333000001,
+          "prompt_tokens": 56,
+          "completion_tokens": 165,
+          "gen_tokens_per_s": 24.408519623654808,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.18668391700066422,
+          "total_s": 7.645841833000304,
+          "prompt_tokens": 56,
+          "completion_tokens": 181,
+          "gen_tokens_per_s": 24.265473668517078,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.1837025419999918,
+          "total_s": 7.249455874999512,
+          "prompt_tokens": 56,
+          "completion_tokens": 173,
+          "gen_tokens_per_s": 24.484296556466237,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.183858667000095,
+          "total_s": 11.356392959000004,
+          "prompt_tokens": 56,
+          "completion_tokens": 269,
+          "gen_tokens_per_s": 24.076900814940206,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        },
+        {
+          "ttft_s": 0.18239641600030154,
+          "total_s": 6.964805958000397,
+          "prompt_tokens": 56,
+          "completion_tokens": 166,
+          "gen_tokens_per_s": 24.47507762131502,
+          "backend_tokens_per_s": null,
+          "served_model": "qwen2.5-coder-7b-instruct-mlx"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 24.408519623654808,
+          "mean": 24.34205365697867,
+          "p95": 24.482452769435994,
+          "min": 24.076900814940206,
+          "max": 24.484296556466237,
+          "stdev": 0.15395886888544882,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.1837025419999918,
+          "mean": 0.18294962500021938,
+          "p95": 0.18611886700055036,
+          "min": 0.17810658300004434,
+          "max": 0.18668391700066422,
+          "stdev": 0.002796400333418665,
+          "n": 5
+        },
+        "total_s": {
+          "median": 7.249455874999512,
+          "mean": 8.030907591600045,
+          "p95": 10.614282733800064,
+          "min": 6.938041333000001,
+          "max": 11.356392959000004,
+          "stdev": 1.6821845739968877,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 173.0,
+          "mean": 190.8,
+          "p95": 251.39999999999998,
+          "min": 165.0,
+          "max": 269.0,
+          "stdev": 39.51910930170365,
+          "n": 5
+        }
+      },
+      "error": null
+    }
+  ]
+}
