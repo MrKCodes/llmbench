@@ -729,7 +729,7 @@ function drawBars(progress) {
     });
     ctx.save(); ctx.fillStyle=muted; ctx.font='11px var(--sans)';
     ctx.translate(gx,pad.top+plotH+8); ctx.rotate(Math.PI/5); ctx.textAlign='left';
-    ctx.fillText(g.short, 0, 0); ctx.restore();
+    ctx.fillText(cellShort(g), 0, 0); ctx.restore();
   });
 }
 document.getElementById('cmp-canvas').addEventListener('mousemove', ev => {
@@ -833,7 +833,7 @@ function renderHeatmap() {
     const vals=machines.map(m=>rawVal(mk,c.id,m.slug));
     const present=vals.filter(v=>typeof v==='number');
     const lo=present.length?Math.min(...present):0, hi=present.length?Math.max(...present):0;
-    const tr=el('tr',{},[el('th',{class:'rowh',title:c.id},txt(c.short))]);
+    const tr=el('tr',{},[el('th',{class:'rowh',title:c.id},txt(cellShort(c)))]);
     vals.forEach((v,i) => {
       if (typeof v!=='number'){ tr.append(el('td',{class:'na',title:machines[i].label+': not run'},txt('—'))); return; }
       let t = hi===lo ? 1 : (isHib(mk) ? (v-lo)/(hi-lo) : (hi-v)/(hi-lo)); // 1 = best in row
