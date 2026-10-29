@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "machine": {
+    "host": "K\u2019s Mac mini",
+    "label": "K\u2019s Mac mini",
+    "os": "Darwin 27.2.0",
+    "os_version": "Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:07 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T8132",
+    "arch": "arm64",
+    "cpu": "Apple M4",
+    "ram_gb": 16.0,
+    "gpus": [
+      "Apple M4 GPU (10 cores)"
+    ],
+    "python": "3.13.7",
+    "slug": "darwin-arm64-apple-m4-k-s-mac-mini"
+  },
+  "config": {
+    "runs": 5,
+    "warmup": 1,
+    "max_tokens": 512,
+    "temperature": 0.2,
+    "timeout": 900
+  },
+  "started_unix": 1793243730.6783512,
+  "finished_unix": 1793243859.739431,
+  "cells": [
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b",
+      "served_model": "google/gemma-3-4b",
+      "size": "4B",
+      "prompt_id": "fib-memo",
+      "runs": [
+        {
+          "ttft_s": 0.08106758299982175,
+          "total_s": 14.199250083000152,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 36.26529122994323,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.08384741700001541,
+          "total_s": 14.266094458000225,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 36.101472391492834,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.08386274999975285,
+          "total_s": 14.188924457999747,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 36.29902588158179,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.0746062919997712,
+          "total_s": 13.893671750000067,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 37.05026230291043,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.08773429100028807,
+          "total_s": 13.924837541000215,
+          "prompt_tokens": 37,
+          "completion_tokens": 512,
+          "gen_tokens_per_s": 37.001964265895225,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 36.29902588158179,
+          "mean": 36.5436032143647,
+          "p95": 37.04060269550739,
+          "min": 36.101472391492834,
+          "max": 37.05026230291043,
+          "stdev": 0.3998883800470659,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.08384741700001541,
+          "mean": 0.08222366659992986,
+          "p95": 0.08695998280018102,
+          "min": 0.0746062919997712,
+          "max": 0.08773429100028807,
+          "stdev": 0.004360070323395203,
+          "n": 5
+        },
+        "total_s": {
+          "median": 14.188924457999747,
+          "mean": 14.09455565800008,
+          "p95": 14.25272558300021,
+          "min": 13.893671750000067,
+          "max": 14.266094458000225,
+          "stdev": 0.15391590994845206,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 512.0,
+          "mean": 512.0,
+          "p95": 512.0,
+          "min": 512.0,
+          "max": 512.0,
+          "stdev": 0.0,
+          "n": 5
+        }
+      },
+      "error": null
+    },
+    {
+      "backend": "lmstudio",
+      "model": "gemma-3-4b",
+      "format": "gguf",
+      "model_id": "google/gemma-3-4b",
+      "served_model": "google/gemma-3-4b",
+      "size": "4B",
+      "prompt_id": "explain-uma",
+      "runs": [
+        {
+          "ttft_s": 0.07187045899991062,
+          "total_s": 7.450194458999704,
+          "prompt_tokens": 35,
+          "completion_tokens": 272,
+          "gen_tokens_per_s": 36.86474055625744,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.07541616700018494,
+          "total_s": 7.102783917000124,
+          "prompt_tokens": 35,
+          "completion_tokens": 258,
+          "gen_tokens_per_s": 36.71360446448846,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.07558012500021505,
+          "total_s": 7.020556625000154,
+          "prompt_tokens": 35,
+          "completion_tokens": 256,
+          "gen_tokens_per_s": 36.86117584415185,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.07498304199998529,
+          "total_s": 7.314532916999724,
+          "prompt_tokens": 35,
+          "completion_tokens": 266,
+          "gen_tokens_per_s": 36.74261585220581,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        },
+        {
+          "ttft_s": 0.07065937500010477,
+          "total_s": 7.3181761669998195,
+          "prompt_tokens": 35,
+          "completion_tokens": 266,
+          "gen_tokens_per_s": 36.70222610503342,
+          "backend_tokens_per_s": null,
+          "served_model": "google/gemma-3-4b"
+        }
+      ],
+      "summary": {
+        "gen_tokens_per_s": {
+          "median": 36.74261585220581,
+          "mean": 36.77687256442739,
+          "p95": 36.86402761383632,
+          "min": 36.70222610503342,
+          "max": 36.86474055625744,
+          "stdev": 0.07152103978930466,
+          "n": 5
+        },
+        "ttft_s": {
+          "median": 0.07498304199998529,
+          "mean": 0.07370183360008013,
+          "p95": 0.07554733340020903,
+          "min": 0.07065937500010477,
+          "max": 0.07558012500021505,
+          "stdev": 0.0020356276581552568,
+          "n": 5
+        },
+        "total_s": {
+          "median": 7.314532916999724,
+          "mean": 7.241248816999905,
+          "p95": 7.423790800599727,
+          "min": 7.020556625000154,
+          "max": 7.450194458999704,
+          "stdev": 0.15673176445322445,
+          "n": 5
+        },
+        "completion_tokens": {
+          "median": 266.0,
+          "mean": 263.6,
+          "p95": 270.8,
+          "min": 256.0,
+          "max": 272.0,
+          "stdev": 5.851495535331117,
+          "n": 5
+        }
+      },
+      "error": null
+    }
+  ]
+}
